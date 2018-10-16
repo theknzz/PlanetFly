@@ -51,6 +51,7 @@ end
 
 ; MOVEMENT
 to go
+  dead?
   move
 end
 
@@ -59,11 +60,10 @@ to move
   [
     ;procreate
     comer
-    fd 1
   ]
   ask moscasE
   [
-    steal
+    ;steal
     fd 1
   ]
 end
@@ -80,13 +80,33 @@ end
 to comer
    ask moscas
   [
-        if any? neighbors4 with [pcolor = brown]
+        ifelse any? neighbors4 with [pcolor = brown]
         [
-           ask one-of neighbors with [pcolor = brown]
-           [
+           let comida one-of neighbors4 with [pcolor = brown]
+                  face comida
+                  move-to comida
                   set pcolor green
+                  set energy energy + food_energy
+        ]
+        [
+           ifelse any? neighbors4 with [pcolor = green]
+           [
+                 let empty one-of neighbors4 with [pcolor = green]
+                   face empty
+                   move-to empty
+                   set energy energy - 1
            ]
-           set energy energy + food_energy
+           [
+             if random 101 < 50
+             [
+               right 90
+               fd 1
+               set energy energy - 1
+             ]
+               left 90
+               fd 1
+               set energy energy - 1
+           ]
         ]
   ]
 end
@@ -109,15 +129,15 @@ to procreate
 end
 
 ;; MOSCASE vs MOSCAS
-to steal
-  ask moscasE
+
+
+;; Verify life
+to dead?
+  ask turtles
   [
-    if any? moscas-on neighbors
+    if energy <= 0
     [
-      ask n-of moscas
-      [
-        set fertilidade  fertilidade * (stealFertilidade / 100)
-      ]
+      die
     ]
   ]
 end
@@ -158,7 +178,7 @@ food_energy
 food_energy
 1
 50
-50.0
+1.0
 1
 1
 NIL
@@ -207,7 +227,7 @@ food
 food
 5
 20
-15.0
+5.0
 1
 1
 NIL
@@ -222,7 +242,7 @@ nmoscas
 nmoscas
 1
 50
-10.0
+5.0
 1
 1
 NIL
@@ -237,7 +257,7 @@ nmoscasE
 nmoscasE
 1
 50
-10.0
+1.0
 1
 1
 NIL
@@ -252,7 +272,7 @@ stealFertilidade
 stealFertilidade
 0
 10
-5.0
+0.0
 1
 1
 NIL
