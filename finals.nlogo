@@ -10,9 +10,10 @@ to setup
   setup-patches
   setup-food
   setup-turtles
-  comer
   reset-ticks
 end
+
+; CREATE ENVIRMENT
 
 to setup-patches
   ask patches
@@ -50,6 +51,21 @@ end
 
 ; MOVEMENT
 to go
+  move
+end
+
+to move
+  ask moscas
+  [
+    ;procreate
+    comer
+    fd 1
+  ]
+  ask moscasE
+  [
+    steal
+    fd 1
+  ]
 end
 
 ; CREATE FOOD
@@ -62,22 +78,55 @@ to setup-food
 end
 
 to comer
+   ask moscas
+  [
+        if any? neighbors4 with [pcolor = brown]
+        [
+           ask one-of neighbors with [pcolor = brown]
+           [
+                  set pcolor green
+           ]
+           set energy energy + food_energy
+        ]
+  ]
+end
+
+;; PROCREATE
+to procreate
   ask moscas
   [
-
-    if one-of neighbors4 with [pcolor = brown]
+    if any? moscas-on neighbors4
     [
-      set pcolor green
-      set energy energia_comida
+      ;create-ovoMosca 1
+
+      ;ask ovoMosca
+      ;[
+      ;  set shape "zygote"
+      ;  set color white
+      ;]
+    ]
+  ]
+end
+
+;; MOSCASE vs MOSCAS
+to steal
+  ask moscasE
+  [
+    if any? moscas-on neighbors
+    [
+      ask n-of moscas
+      [
+        set fertilidade  fertilidade * (stealFertilidade / 100)
+      ]
     ]
   ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-232
-25
-669
-463
+395
+14
+832
+452
 -1
 -1
 13.0
@@ -101,12 +150,12 @@ ticks
 30.0
 
 SLIDER
-12
-69
-184
-102
-energia_comida
-energia_comida
+208
+27
+380
+60
+food_energy
+food_energy
 1
 50
 50.0
@@ -150,45 +199,60 @@ NIL
 1
 
 SLIDER
-13
-113
-185
-146
+208
+69
+380
+102
 food
 food
 5
 20
+15.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+209
+133
+381
+166
+nmoscas
+nmoscas
+1
+50
+10.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+209
+174
+381
+207
+nmoscasE
+nmoscasE
+1
+50
+10.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+211
+256
+383
+289
+stealFertilidade
+stealFertilidade
+0
+10
 5.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-14
-154
-186
-187
-nmoscas
-nmoscas
-1
-50
-10.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-18
-198
-190
-231
-nmoscasE
-nmoscasE
-1
-50
-10.0
 1
 1
 NIL
